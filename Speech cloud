@@ -1,0 +1,35 @@
+modi_cloud<-readLines("C:/Users/ADMIN/Desktop/modi speach.txt")
+
+library(tm)
+modi_corpus<-Corpus(VectorSource(modi_cloud))
+inspect(modi_corpus[5:7])
+
+modi_clear_corpus<-tm_map(modi_corpus,tolower)
+modi_clear_corpus<-tm_map(modi_clear_corpus,removeNumbers)
+modi_clear_corpus<-tm_map(modi_clear_corpus,removePunctuation)
+modi_clear_corpus<-tm_map(modi_clear_corpus,stripWhitespace)
+modi_clear_corpus<-tm_map(modi_clear_corpus,removeWords,stopwords())
+modi_clear_corpus<-tm_map(modi_clear_corpus,removeWords,c('said','modi'))
+
+modi_clear_corpus<-tm_map(modi_clear_corpus,stemDocument)
+
+inspect(modi_clear_corpus[1:10])
+install.packages('wordcloud')
+library(wordcloud)
+
+wordcloud(modi_clear_corpus,min.freq = 2)
+wordcloud(modi_clear_corpus,min.freq = 1,colors = brewer.pal(9,"Set2"),random.order = F,rot.per = .30)
+
+modi_tdm<-TermDocumentMatrix(modi_clear_corpus)
+inspect(modi_tdm[1:10,10:20])
+modi_matrix<-as.matrix(modi_tdm)
+modi_sorted<-sort(rowSums(modi_matrix),decreasing = TRUE)
+head(modi_sorted)
+modi_df<-data.frame(word=names(modi_sorted),freq=modi_sorted)
+head(modi_df)
+wordcloud(modi_df$word,min.freq = 2)
+wordcloud(modi_df$word,modi_df$freq,min.freq = 1,colors = brewer.pal(9,"Set2"),random.order = F,rot.per = .30)
+#correlation word
+findFreqTerms(modi_tdm,lowfreq = 7)
+findAssocs(modi_tdm,'india',.5)
+findAssocs(modi_tdm,'gst',.5)
