@@ -1,0 +1,17 @@
+import nltk
+nltk.download('punkt')
+sentence="""At eight o'clock on Thursday morning
+... Arthur didn't feel very good."""
+tokens= nltk.word_tokenize(sentence)
+
+nltk.download('averaged_perceptron_tagger')
+tagged=nltk.pos_tag(tokens)
+
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
+entities=nltk.chunk.ne_chunk(tagged)
+
+from nltk.corpus import treebank
+nltk.download('treebank')
+t=treebank.parsed_sents('wsj_0001.mrg')[0]
+t.draw()
